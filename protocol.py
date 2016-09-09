@@ -1,4 +1,4 @@
 class ServerProtocol(object):
-    MESSAGE_END = '>>>'
+    MESSAGE_END = ' '
     DISCONNECT = '!!!'
 
