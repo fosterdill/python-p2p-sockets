@@ -4,19 +4,19 @@ class ProtocolBuffer(object):
         self._data = data
 
     def append_data(self, data):
-    	if self._data:
-    		self._data += data
-    	else:
-    		self._data = data
+        if self._data:
+            self._data += data
+        else:
+            self._data = data
 
     def clear(self):
-    	self._data = None
+        self._data = None
 
     def did_close(self):
-    	if self._data is None:
-    		return False
+        if self._data is None:
+            return False
 
-    	return self._protocol.DISCONNECT in self._data
+        return self._protocol.DISCONNECT in self._data
 
     def get_message(self):
         messages = filter(None, self._data.split(self._protocol.MESSAGE_END))
@@ -25,4 +25,4 @@ class ProtocolBuffer(object):
             self._data = self._data[len(messages[0]) + len(self._protocol.MESSAGE_END):]
             return messages[0]
         else:
-        	return None
+            return None

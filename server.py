@@ -22,17 +22,17 @@ class Server(object):
                 if not new_data:
                     break
 
-                self.handle_messages(message_handler.handle_message)
+                self.handle_messages(message_handler.handle_message, client_socket, client_address)
 
             client_socket.close()
             self.protocol_buffer.clear()
 
-    def handle_messages(self, handle_message):
+    def handle_messages(self, handle_message, client_socket, client_address):
         while True:
             message = self.protocol_buffer.get_message()
 
             if message:
-                handle_message(message)
+                handle_message(message, client_socket, client_address)
             else:
                 break
 
