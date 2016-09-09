@@ -3,8 +3,9 @@ import sys
 import signal
 
 class Server(object):
-    def __init__(self, protocol_manager):
-        self.protocol_manager = protocol_manager
+    def __init__(self, protocol_buffer, recv_byte_size = 128):
+        self.protocol_buffer = protocol_buffer
+        self.recv_byte_size = recv_byte_size
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def listen(self, host_and_port, message_handler, concurrent_connections = 5):
@@ -13,21 +14,25 @@ class Server(object):
 
         while True:
             (client_socket, client_address) = self.server_socket.accept()
-            data = ""
 
-            while not self.protocol_manager.did_close(data):
-                data += client_socket.recv(128)
+            while not self.protocol_buffer.did_close():
+                new_data = client_socket.recv(self.recv_byte_size)
+                self.protocol_buffer.append_data(new_data)
 
-                if not data:
+                if not new_data:
                     break
 
-                while True:
-                    (message, data) = self.protocol_manager.unshift_message(data)
-
-                    if message:
-                        message_handler(message)
-                    else:
-                        break
+                self.handle_messages(message_handler.handle_message)
 
             client_socket.close()
+            self.protocol_buffer.clear()
+
+    def handle_messages(self, handle_message):
+        while True:
+            message = self.protocol_buffer.get_message()
+
+            if message:
+                handle_message(message)
+            else:
+                break
 
