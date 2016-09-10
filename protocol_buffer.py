@@ -21,8 +21,10 @@ class ProtocolBuffer(object):
     def get_message(self):
         messages = filter(None, self._data.split(self._protocol.MESSAGE_END))
 
-        if len(messages) > 1:
+        if len(messages) > 0:
             self._data = self._data[len(messages[0]) + len(self._protocol.MESSAGE_END):]
             return messages[0]
         else:
             return None
+    def get_protocol(self):
+        self._protocol

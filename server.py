@@ -8,6 +8,9 @@ class Server(object):
         self.recv_byte_size = recv_byte_size
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+    def close(self):
+        self.server_socket.close()
+
     def listen(self, host_and_port, message_handler, concurrent_connections = 5):
         self.server_socket.bind(host_and_port)
         self.server_socket.listen(concurrent_connections)
@@ -32,7 +35,7 @@ class Server(object):
             message = self.protocol_buffer.get_message()
 
             if message:
-                handle_message(message, client_socket, client_address)
+                handle_message(message, client_socket, client_address, self.protocol_buffer, False)
             else:
                 break
 

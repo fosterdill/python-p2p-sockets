@@ -1,3 +1,5 @@
+#! /usr/bin/env python2
+
 from server import Server
 from protocol import ServerProtocol
 from protocol_buffer import ProtocolBuffer
@@ -27,6 +29,8 @@ def main():
             main_server.listen((HOST, PORT), delegate_handler)
 
         except KeyboardInterrupt:
+            main_server.close()
+            
             if upnp_client.unmap(PORT):
                 print "Unmapped port {}".format(PORT)
             else:
