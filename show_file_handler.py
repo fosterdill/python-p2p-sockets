@@ -16,7 +16,10 @@ class ShowFileHandler(MessageHandler):
                 protocol_buffer.append_data(socket.recv(4))
                 file_size = int(protocol_buffer.get_message())
 
-            print socket.recv(file_size)
+            file_data = socket.recv(file_size)
+            new_file = open("new-{}".format(message), 'w')
+            new_file.write(file_data)
+            new_file.close()
         else:
             if self.inverse:
                 socket.sendall('give file {} '.format(message))
